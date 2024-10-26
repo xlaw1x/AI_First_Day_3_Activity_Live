@@ -17,40 +17,51 @@ from streamlit_option_menu import option_menu
 from streamlit_extras.mention import mention
 from newspaper import Article
 
+# Suppress warnings
 warnings.filterwarnings("ignore")
 
-st.set_page_config(page_title="News Summarizer Tool", page_icon="=:robot:", layout="wide")
+# Set Streamlit page configuration
+st.set_page_config(page_title="News Summarizer Tool", page_icon=":robot:", layout="wide")
 
+# Sidebar for API token input
 with st.sidebar:
     openai.api_key = st.text_input("Enter your OpenAI API token", type="password")
-    if not (openai.api_key.startswith("sk-") and len(openai.api_key) == 164):
+    if not (openai.api_key and openai.api_key.startswith("sk-") and len(openai.api_key) == 64):
         st.warning("Please enter a valid OpenAI API token", icon="⚠️")
     else:
-        st.success("Proceed to entering yout prompt message", icon="✅")
+        st.success("Proceed to entering your prompt message", icon="✅")
 
-with st.container() :
-        l, m, r = st.columns((1, 3, 1))
-        with l : st.empty()
-        with m : st.empty()
-        with r : st.empty()
+# Create three empty containers for layout in the main section
+with st.container():
+    l, m, r = st.columns((1, 3, 1))
+    with l:
+        st.empty()
+    with m:
+        st.empty()
+    with r:
+        st.empty()
 
-    options = option_menu("Dashboard", 
-        ["Home", "About Us", "Model"],
-        icons = ['book', 'globe', 'tools'],
-        menu_icon = "book", 
-        default_index = 0,
-        styles = {
-            "icon" : {"color" : "#dec960", "font-size" : "20px"},
-            "nav-link" : {"font-size" : "17px", "text-align" : "left", "margin" : "5px", "--hover-color" : "#262730"},
-            "nav-link-selected" : {"background-color" : "#262730"}          
-        })
+# Create option menu for navigation
+options = option_menu("Dashboard",
+                      ["Home", "About Us", "Model"],
+                      icons=['house', 'info-circle', 'cogs'],
+                      menu_icon="book",
+                      default_index=0,
+                      styles={
+                          "icon": {"color": "#dec960", "font-size": "20px"},
+                          "nav-link": {"font-size": "17px", "text-align": "left", "margin": "5px", "--hover-color": "#262730"},
+                          "nav-link-selected": {"background-color": "#262730"}
+                      })
+
+# Initialize session states if not already set
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 
 if 'chat_session' not in st.session_state:
-     st.session_state.chat_session = None # Placeholder for the chat session initialization
+    st.session_state.chat_session = None  # Placeholder for the chat session initialization
 
-elif options == "Home":
+# Handle navigation options
+if options == "Home":
     st.title("Welcome to News Summarizer Tool")
     st.write("This tool is designed to help you summarize news articles using the GPT-4o mini model from OpenAI. To get started, please enter your OpenAI API token in the sidebar and then enter your prompt message below.")
 
@@ -60,28 +71,29 @@ elif options == "About Us":
 
 elif options == "Model":
     st.title('News Summarizer Tool')
-        col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([1, 2, 1])
 
-     with col2:
-    # Input field for news article URL
-    article_url = st.text_input("Enter News Article URL", placeholder="https://example.com/article")
+    with col2:
+        # Input field for news article URL
+        article_url = st.text_input("Enter News Article URL", placeholder="https://example.com/article")
 
-    # Button to trigger article fetching and summary generation
-    submit_button = st.button("Generate Summary")
+        # Button to trigger article fetching and summary generation
+        submit_button = st.button("Generate Summary")
 
-    if submit_button and article_url:
-        try:
-            with st.spinner("Fetching and processing the article..."):
-                # Download and parse the article using newspaper3k
-                article = Article(article_url)
-                article.download()
-                article.parse()
-                user_message = article.text
+        # If button clicked and URL entered
+        if submit_button and article_url:
+            try:
+                with st.spinner("Fetching and processing the article..."):
+                    # Download and parse the article using newspaper3k
+                    article = Article(article_url)
+                    article.download()
+                    article.parse()
+                    user_message = article.text
 
-            with st.spinner("Generating Summary..."):
-                # System prompt for summarization
-                System_Prompt = """
-System Prompt: Advanced News Summarizer
+                with st.spinner("Generating Summary..."):
+                    # System prompt for summarization
+                    System_Prompt = """
+                    System Prompt: Advanced News Summarizer
 
 You are an advanced news summarizer designed to create accurate, neutral, and engaging summaries of news articles provided by the user. When a user shares a news article, follow these steps to craft a high-quality summary tailored to the user’s needs.
 
