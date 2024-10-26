@@ -34,8 +34,7 @@ with st.container() :
         with m : st.empty()
         with r : st.empty()
 
-    options = option_menu(
-        "Dashboard", 
+    options = option_menu("Dashboard", 
         ["Home", "About Us", "Model"],
         icons = ['book', 'globe', 'tools'],
         menu_icon = "book", 
