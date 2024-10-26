@@ -161,5 +161,5 @@ If the article reports on a global climate summit, the summarizer might respond:
                 st.write("**Generated Summary:**")
                 st.write(response)
 
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
