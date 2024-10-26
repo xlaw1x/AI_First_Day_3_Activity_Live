@@ -19,7 +19,7 @@ from newspaper import Article
 
 warnings.filterwarnings("ignore")
 
-st.set_page_config(page_title="News Summarizer Tool", page_icon="=:robot:", layout"wide")
+st.set_page_config(page_title="News Summarizer Tool", page_icon="=:robot:", layout="wide")
 
 with st.sidebar:
     openai.api_key = st.text_input("Enter your OpenAI API token", type="password")
